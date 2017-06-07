@@ -47,6 +47,8 @@ class Spectrum(widget.OWWidget):
     description = 'View frequency spectrum as column chart.'
     icon = "icons/spectrum.svg"
 
+    __version__ = '0.0.2'
+
     inputs = [("Data", PivotCrosstab, "set_data")]
     outputs = [
         ("Binned data in Textable format", PivotCrosstab),
@@ -141,7 +143,7 @@ class Spectrum(widget.OWWidget):
             if len(row_ids) == 1:
                 row_id = 'proportion of %s-gram types (in per mille)' % n
                 row_ids = [row_id]
-            for i in xrange(len(labels)):
+            for i in range(len(labels)):
                 spectrum[(row_id, labels[i])] =  hist[i]
         options['title'] = dict(text='%s-gram frequency spectrum' % n)
         options['yAxis'] = dict(

@@ -36,7 +36,7 @@ class NGrams(OWTextableBaseWidget):
     description = 'Fast(er) ngram count'
     icon = "icons/NGram.png"
 
-    __version__ = '0.0.1'
+    __version__ = '0.0.2'
 
     inputs = [('Segmentation', Segmentation, "inputData", widget.Single)]
     outputs = [
@@ -181,7 +181,7 @@ class NGrams(OWTextableBaseWidget):
                 contents = [seg.get_content() for seg in self.segmentation]
             source_num_tokens = len(contents)
             source_freq = dict()
-            for i in xrange(len(contents)-(sequenceLength-1)):
+            for i in range(len(contents)-(sequenceLength-1)):
                 seg = tuple(contents[i:i+sequenceLength])
                 try:
                     source_freq[seg] += 1
