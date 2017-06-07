@@ -17,6 +17,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import Orange
 from Orange.widgets import gui, settings, widget
 
+from PyQt4 import QtGui
+
 from LTTL.Segmentation import Segmentation
 from LTTL.Table import Table, IntPivotCrosstab
 from _textable.widgets.TextableUtils import (
@@ -51,6 +53,7 @@ class NGrams(OWTextableBaseWidget):
     )
 
     # Settings...
+    autoSend = settings.Setting(True)
     sequenceLength = settings.Setting(1)
     annotationKey = settings.ContextSetting("")
 
@@ -108,7 +111,6 @@ class NGrams(OWTextableBaseWidget):
             master=self,
             value='annotationKey',
             sendSelectedValue=True,
-#            emptyString=u'(none)',
             orientation='horizontal',
             label=u'Group data based on this annotation:',
             labelWidth=220,

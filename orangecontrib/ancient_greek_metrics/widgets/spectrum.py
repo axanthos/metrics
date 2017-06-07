@@ -1,5 +1,5 @@
 """
-Class LineChart
+Class Spectrum
 Copyright 2017 LangTech Sarl (info@langtech.ch)
 -----------------------------------------------------------------------------
 This program is free software: you can redistribute it and/or modify
@@ -20,6 +20,8 @@ import numpy as np
 
 from Orange.data import Table
 from Orange.widgets import gui, settings, widget, highcharts
+
+from PyQt4 import QtGui
 
 from LTTL.Table import PivotCrosstab
 from LTTL.Utils import tuple_to_simple_dict
