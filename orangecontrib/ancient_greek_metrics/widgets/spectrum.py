@@ -49,7 +49,7 @@ class Spectrum(widget.OWWidget):
     description = 'View frequency spectrum as column chart.'
     icon = "icons/spectrum.svg"
 
-    __version__ = '0.0.2'
+    __version__ = '0.0.3'
 
     inputs = [("Data", PivotCrosstab, "set_data")]
     outputs = [
@@ -94,6 +94,35 @@ class Spectrum(widget.OWWidget):
         # ... else replot.
         self.replot()
 
+    def exportChart(self):
+        """Display a FileDialog and export graph as SVG"""
+        filePath = QFileDialog.getSaveFileName(self, u'Export SVG file')
+
+        if filePath:
+            try:
+                outputFile = codecs.open(
+                    filePath,
+                    encoding="utf-8",
+                    mode="w",
+                )
+                outputFile.write(
+                    "<svg>" + self.col_chart.svg() + "</svg>", 
+                )
+                outputFile.close()
+                QMessageBox.information(
+                    None,
+                    'Textable',
+                    'SVG file correctly exported',
+                    QMessageBox.Ok
+                )
+            except Exception as exc:
+                print(exc)
+                QMessageBox.warning(
+                    None,
+                    'Textable',
+                    'Couldn\'t save SVG file.',
+                    QMessageBox.Ok
+                )
     def replot(self):
 
         if self.data is None:
@@ -181,9 +210,8 @@ class Spectrum(widget.OWWidget):
         self.send("Binned data in Orange format", output_table.to_orange_table())
         
         
-    # def send_report(self):
-        # self.report_data('Data', self.data)
-        # self.report_raw('Scatter plot', self.scatter.svg())
+    def send_report(self):
+        self.report_raw('Line chart', self.line_chart.svg())
 
 
 def main():

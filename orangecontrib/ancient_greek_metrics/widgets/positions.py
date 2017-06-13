@@ -15,6 +15,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
 import re
+import codecs
 
 import numpy as np
 
@@ -22,6 +23,7 @@ import Orange
 from Orange.widgets import gui, settings, widget, highcharts
 
 from PyQt4 import QtGui
+from PyQt4.QtGui import QFileDialog, QMessageBox
 
 from LTTL.Table import PivotCrosstab, IntPivotCrosstab
 from LTTL.Segmentation import Segmentation
@@ -56,7 +58,7 @@ class Positions(OWTextableBaseWidget):
     description = 'Visualize syllable/letter occurrences at hexametric positions.'
     icon = "icons/positions.svg"
 
-    __version__ = '0.0.1'
+    __version__ = '0.0.2'
 
     inputs = [('Segmentation', Segmentation, "inputData", widget.Single)]
     outputs = [
@@ -156,6 +158,16 @@ class Positions(OWTextableBaseWidget):
             ),
         )
         gui.separator(widget=self.optionsBox, height=3)
+        self.exportButton = gui.button(
+            widget=self.optionsBox,
+            master=self,
+            label=u'Save chart as SVG file',
+            callback=self.exportChart,
+            tooltip=(
+                u"Save the chart in SVG format."
+            ),
+        )
+        gui.separator(widget=self.optionsBox, height=3)
 
         gui.rubber(self.controlArea)
 
@@ -166,7 +178,7 @@ class Positions(OWTextableBaseWidget):
         self.infoBox.draw()
 
         # Create a column chart instance.
-        self.line_chart = HSColumnChart(
+        self.col_chart = HSColumnChart(
             selection_callback=None,
             tooltip_shared=True,
             tooltip_useHTML=True,
@@ -178,12 +190,43 @@ class Positions(OWTextableBaseWidget):
             )
         # Just render an empty chart so it shows a nice 'No data to display'
         # warning
-        self.line_chart.chart()
+        self.col_chart.chart()
 
-        self.mainArea.layout().addWidget(self.line_chart)
+        self.mainArea.layout().addWidget(self.col_chart)
 
         self.sendButton.sendIf()
         self.adjustSizeWithTimer()
+
+    def exportChart(self):
+        """Display a FileDialog and export graph as SVG"""
+        filePath = QFileDialog.getSaveFileName(self, u'Export SVG file')
+
+        if filePath:
+            try:
+                outputFile = codecs.open(
+                    filePath,
+                    encoding="utf-8",
+                    mode="w",
+                )
+                outputFile.write(
+                    "<svg>" + self.col_chart.svg() + "</svg>", 
+                )
+                outputFile.close()
+                QMessageBox.information(
+                    None,
+                    'Textable',
+                    'SVG file correctly exported',
+                    QMessageBox.Ok
+                )
+            except Exception as exc:
+                print(exc)
+                QMessageBox.warning(
+                    None,
+                    'Textable',
+                    'Couldn\'t save SVG file.',
+                    QMessageBox.Ok
+                )
+                
 
     def inputData(self, segmentation, newId=None):
         """Process incoming data."""
@@ -220,7 +263,7 @@ class Positions(OWTextableBaseWidget):
         if self.segmentation is None:
             self.annotationKey = ""
             self.optionsBox.setDisabled(True)
-            self.line_chart.clear()
+            self.col_chart.clear()
             return
         else:
             annotationKeys = self.segmentation.get_annotation_keys()
@@ -343,7 +386,7 @@ class Positions(OWTextableBaseWidget):
             )
         )
         kwargs = dict()
-        self.line_chart.chart(options, **kwargs)
+        self.col_chart.chart(options, **kwargs)
 
         if self.queryString:
             base_seg, _ = Segmenter.select(
@@ -363,12 +406,10 @@ class Positions(OWTextableBaseWidget):
         self.output_segmentation = output_seg
 
         progressBar.finish()
-
         
         
-    # def send_report(self):
-        # self.report_data('Data', self.data)
-        # self.report_raw('Scatter plot', self.scatter.svg())
+    def send_report(self):
+        self.report_raw('Column chart', self.col_chart.svg())
 
 
 def main():
