@@ -20,7 +20,9 @@ import codecs
 import numpy as np
 
 import Orange
-from Orange.widgets import gui, settings, widget, highcharts
+from Orange.widgets import gui, settings, widget
+
+import pyqtgraph as pg
 
 from PyQt4 import QtGui
 from PyQt4.QtGui import QFileDialog, QMessageBox
@@ -42,14 +44,14 @@ from _textable.widgets.TextableUtils import (
 SYLLABLE_ANNOTATION_KEY = 'p'
 REFERENCE_ANNOTATION_KEY = 'r'
 
-class HSColumnChart(highcharts.Highchart):
-    """
-    Extends Highchart and just defines some defaults:
-    * enables scroll-wheel zooming,
-    * sets the chart type to 'column' 
-    """
-    def __init__(self, selection_callback, **kwargs):
-        super().__init__(enable_zoom=True, chart_type='column', **kwargs)
+# class HSColumnChart(highcharts.Highchart):
+    # """
+    # Extends Highchart and just defines some defaults:
+    # * enables scroll-wheel zooming,
+    # * sets the chart type to 'column' 
+    # """
+    # def __init__(self, selection_callback, **kwargs):
+        # super().__init__(enable_zoom=True, chart_type='column', **kwargs)
 
 
 class Positions(OWTextableBaseWidget):
@@ -58,7 +60,7 @@ class Positions(OWTextableBaseWidget):
     description = 'Visualize syllable/letter occurrences at hexametric positions.'
     icon = "icons/positions.svg"
 
-    __version__ = '0.0.2'
+    __version__ = '0.0.3'
 
     inputs = [('Segmentation', Segmentation, "inputData", widget.Single)]
     outputs = [
@@ -177,22 +179,25 @@ class Positions(OWTextableBaseWidget):
         # Info box...
         self.infoBox.draw()
 
+        self.col_chart = pg.PlotWidget()
+        self.mainArea.layout().addWidget(self.col_chart)      
+        
         # Create a column chart instance.
-        self.col_chart = HSColumnChart(
-            selection_callback=None,
-            tooltip_shared=True,
-            tooltip_useHTML=True,
-            tooltip_headerFormat='<span style="font-size:10px">{point.key}</span><table>',
-            tooltip_pointFormat='<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                                '<td style="padding:0"><b>{point.y:.3f}</b></td></tr>',
-            tooltip_footerFormat='</table>',
-            debug=True
-            )
-        # Just render an empty chart so it shows a nice 'No data to display'
-        # warning
-        self.col_chart.chart()
+        # self.col_chart = HSColumnChart(
+            # selection_callback=None,
+            # tooltip_shared=True,
+            # tooltip_useHTML=True,
+            # tooltip_headerFormat='<span style="font-size:10px">{point.key}</span><table>',
+            # tooltip_pointFormat='<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                # '<td style="padding:0"><b>{point.y:.3f}</b></td></tr>',
+            # tooltip_footerFormat='</table>',
+            # debug=True
+            # )
+        # # Just render an empty chart so it shows a nice 'No data to display'
+        # # warning
+        # self.col_chart.chart()
 
-        self.mainArea.layout().addWidget(self.col_chart)
+        # self.mainArea.layout().addWidget(self.col_chart)
 
         self.sendButton.sendIf()
         self.adjustSizeWithTimer()
@@ -362,31 +367,42 @@ class Positions(OWTextableBaseWidget):
             None
         ).to_sorted(key_row_id='pos')
 
-        # Plot column chart...
-        options = dict(series=[])
         for col_id in col_ids:
-            options['series'].append(
-                dict(
-                    data=tuple_to_simple_dict_transpose(output_freq, col_id).values(), 
-                    name=col_id,
+            self.col_chart.addItem(
+                pg.BarGraphItem(
+                    x=np.arange(12),    # FIX THIS!
+                    height=tuple_to_simple_dict_transpose(output_freq, col_id).values(), 
+                    width=0.3,
                 )
             )
-        options['yAxis'] = dict(
-            title=dict(text='Frequency')
-        )           
-        options['xAxis'] = dict(
-            title=dict(text='Position'),
-            categories=row_ids,
-            tickmarkPlacement='on',
-        )                
-        options['plotOptions'] = dict(
-            series=dict(
-                pointPadding=0.2,
-                borderWidth=0,
-            )
-        )
-        kwargs = dict()
-        self.col_chart.chart(options, **kwargs)
+       
+        #self.col_chart.addItem(bg3)
+
+        # Plot column chart...
+        # options = dict(series=[])
+        # for col_id in col_ids:
+            # options['series'].append(
+                # dict(
+                    # data=tuple_to_simple_dict_transpose(output_freq, col_id).values(), 
+                    # name=col_id,
+                # )
+            # )
+        # options['yAxis'] = dict(
+            # title=dict(text='Frequency')
+        # )           
+        # options['xAxis'] = dict(
+            # title=dict(text='Position'),
+            # categories=row_ids,
+            # tickmarkPlacement='on',
+        # )                
+        # options['plotOptions'] = dict(
+            # series=dict(
+                # pointPadding=0.2,
+                # borderWidth=0,
+            # )
+        # )
+        # kwargs = dict()
+        # self.col_chart.chart(options, **kwargs)
 
         if self.queryString:
             base_seg, _ = Segmenter.select(
