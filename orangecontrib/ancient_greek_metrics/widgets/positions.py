@@ -44,15 +44,6 @@ from _textable.widgets.TextableUtils import (
 SYLLABLE_ANNOTATION_KEY = 'p'
 REFERENCE_ANNOTATION_KEY = 'r'
 
-# class HSColumnChart(highcharts.Highchart):
-    # """
-    # Extends Highchart and just defines some defaults:
-    # * enables scroll-wheel zooming,
-    # * sets the chart type to 'column' 
-    # """
-    # def __init__(self, selection_callback, **kwargs):
-        # super().__init__(enable_zoom=True, chart_type='column', **kwargs)
-
 
 class Positions(OWTextableBaseWidget):
     """View frequency spectrum as column chart"""
@@ -160,16 +151,6 @@ class Positions(OWTextableBaseWidget):
             ),
         )
         gui.separator(widget=self.optionsBox, height=3)
-        self.exportButton = gui.button(
-            widget=self.optionsBox,
-            master=self,
-            label=u'Save chart as SVG file',
-            callback=self.exportChart,
-            tooltip=(
-                u"Save the chart in SVG format."
-            ),
-        )
-        gui.separator(widget=self.optionsBox, height=3)
 
         gui.rubber(self.controlArea)
 
@@ -179,59 +160,21 @@ class Positions(OWTextableBaseWidget):
         # Info box...
         self.infoBox.draw()
 
-        self.col_chart = pg.PlotWidget()
+        # Create a bar chart instance...
+        stringaxis = pg.AxisItem(orientation='bottom')
+        stringaxis.setTicks([dict(enumerate([
+            "1", "10", "11", "12", 
+            "2", "20", "21", "22", 
+            "3", "30", "31", "32", 
+            "4", "40", "41", "42", 
+            "5", "50", "51", "52", 
+            "6", "60",
+        ])).items()])
+        self.col_chart = pg.PlotWidget(axisItems={'bottom': stringaxis})
         self.mainArea.layout().addWidget(self.col_chart)      
         
-        # Create a column chart instance.
-        # self.col_chart = HSColumnChart(
-            # selection_callback=None,
-            # tooltip_shared=True,
-            # tooltip_useHTML=True,
-            # tooltip_headerFormat='<span style="font-size:10px">{point.key}</span><table>',
-            # tooltip_pointFormat='<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                                # '<td style="padding:0"><b>{point.y:.3f}</b></td></tr>',
-            # tooltip_footerFormat='</table>',
-            # debug=True
-            # )
-        # # Just render an empty chart so it shows a nice 'No data to display'
-        # # warning
-        # self.col_chart.chart()
-
-        # self.mainArea.layout().addWidget(self.col_chart)
-
         self.sendButton.sendIf()
         self.adjustSizeWithTimer()
-
-    def exportChart(self):
-        """Display a FileDialog and export graph as SVG"""
-        filePath = QFileDialog.getSaveFileName(self, u'Export SVG file')
-
-        if filePath:
-            try:
-                outputFile = codecs.open(
-                    filePath,
-                    encoding="utf-8",
-                    mode="w",
-                )
-                outputFile.write(
-                    "<svg>" + self.col_chart.svg() + "</svg>", 
-                )
-                outputFile.close()
-                QMessageBox.information(
-                    None,
-                    'Textable',
-                    'SVG file correctly exported',
-                    QMessageBox.Ok
-                )
-            except Exception as exc:
-                print(exc)
-                QMessageBox.warning(
-                    None,
-                    'Textable',
-                    'Couldn\'t save SVG file.',
-                    QMessageBox.Ok
-                )
-                
 
     def inputData(self, segmentation, newId=None):
         """Process incoming data."""
@@ -366,44 +309,37 @@ class Positions(OWTextableBaseWidget):
             0,
             None
         ).to_sorted(key_row_id='pos')
-
-        for col_id in col_ids:
-            self.col_chart.addItem(
-                pg.BarGraphItem(
-                    x=np.arange(12),    # FIX THIS!
-                    height=tuple_to_simple_dict_transpose(output_freq, col_id).values(), 
-                    width=0.3,
-                )
+        
+        self.col_chart.addLegend()
+        name1 = col_ids[0]
+        data1 = list(
+            tuple_to_simple_dict_transpose(output_freq, name1).values()
+        )
+        self.col_chart.addItem(
+            pg.BarGraphItem(
+                x=np.arange(len(data1))-0.15,
+                height=data1, 
+                brush=(196, 73, 0),
+                width=0.3,
+                name=name1,
             )
-       
-        #self.col_chart.addItem(bg3)
-
-        # Plot column chart...
-        # options = dict(series=[])
-        # for col_id in col_ids:
-            # options['series'].append(
-                # dict(
-                    # data=tuple_to_simple_dict_transpose(output_freq, col_id).values(), 
-                    # name=col_id,
-                # )
-            # )
-        # options['yAxis'] = dict(
-            # title=dict(text='Frequency')
-        # )           
-        # options['xAxis'] = dict(
-            # title=dict(text='Position'),
-            # categories=row_ids,
-            # tickmarkPlacement='on',
-        # )                
-        # options['plotOptions'] = dict(
-            # series=dict(
-                # pointPadding=0.2,
-                # borderWidth=0,
-            # )
-        # )
-        # kwargs = dict()
-        # self.col_chart.chart(options, **kwargs)
-
+        )
+        name2 = col_ids[1]
+        data2 = list(
+            tuple_to_simple_dict_transpose(output_freq, name2).values()
+        )
+        self.col_chart.addItem(
+            pg.BarGraphItem(
+                x=np.arange(len(data2))+0.15,
+                height=data2, 
+                brush=(239, 214, 172),
+                width=0.3,
+                name=name2,
+            )
+        )
+        self.col_chart.setYRange(0, 1.1 * max(data1 + data2), padding=0)
+        print(name1, name2)
+        
         if self.queryString:
             base_seg, _ = Segmenter.select(
                 self.segmentation, 
