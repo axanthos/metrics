@@ -38,12 +38,21 @@ from _textable.widgets.TextableUtils import (
     InfoBox, 
     SendButton, 
     SegmentationContextHandler,
+    ProgressBar,
 )
 
 # Parameters
 SYLLABLE_ANNOTATION_KEY = 'p'
 REFERENCE_ANNOTATION_KEY = 'r'
 
+
+class myLegend(pg.LegendItem):
+    """Subclassing to modify background color..."""
+    def paint(self, p, *args):
+        p.setPen(pg.functions.mkPen(0, 0, 0)) # outline
+        p.setBrush(pg.functions.mkBrush(255, 255, 255, 200))   # background
+        p.drawRect(self.boundingRect())
+        
 
 class Positions(OWTextableBaseWidget):
     """View frequency spectrum as column chart"""
@@ -172,6 +181,8 @@ class Positions(OWTextableBaseWidget):
         ])).items()])
         self.col_chart = pg.PlotWidget(axisItems={'bottom': stringaxis})
         self.mainArea.layout().addWidget(self.col_chart)      
+        self.legend = myLegend((100, 80), offset=(70, 30))
+        self.legend.setParentItem(self.col_chart.graphicsItem())
         
         self.sendButton.sendIf()
         self.adjustSizeWithTimer()
@@ -244,10 +255,12 @@ class Positions(OWTextableBaseWidget):
         letter_count = dict()
         freq = dict()
 
-        progressBar = gui.ProgressBar(
+        progressBar = ProgressBar(
             self,
             iterations=2*len(self.segmentation)
         )
+        self.controlArea.setDisabled(True)
+        self.mainArea.setDisabled(True)
         for syllable in self.segmentation:
             pos = syllable.annotations[SYLLABLE_ANNOTATION_KEY]
             source = syllable.annotations[self.annotationKey]
@@ -310,35 +323,40 @@ class Positions(OWTextableBaseWidget):
             None
         ).to_sorted(key_row_id='pos')
         
-        self.col_chart.addLegend()
+        # TODO: fix Legend REPLOT
+        
         name1 = col_ids[0]
         data1 = list(
             tuple_to_simple_dict_transpose(output_freq, name1).values()
         )
-        self.col_chart.addItem(
-            pg.BarGraphItem(
-                x=np.arange(len(data1))-0.15,
-                height=data1, 
-                brush=(196, 73, 0),
-                width=0.3,
-                name=name1,
-            )
+        s1 = pg.BarGraphItem(
+            x=np.arange(len(data1))-0.15,
+            height=data1,
+            fillLevel=0, 
+            fillBrush=(196, 73, 0), 
+            brush=(196, 73, 0),
+            width=0.3,
         )
+        self.col_chart.addItem(s1)
         name2 = col_ids[1]
         data2 = list(
             tuple_to_simple_dict_transpose(output_freq, name2).values()
         )
-        self.col_chart.addItem(
-            pg.BarGraphItem(
-                x=np.arange(len(data2))+0.15,
-                height=data2, 
-                brush=(239, 214, 172),
-                width=0.3,
-                name=name2,
-            )
+        s2 = pg.BarGraphItem(
+            x=np.arange(len(data2))+0.15,
+            height=data2,
+            fillLevel=0, 
+            fillBrush=(239, 214, 172),
+            brush=(239, 214, 172),
+            width=0.3,
         )
+        self.col_chart.addItem(s2)
         self.col_chart.setYRange(0, 1.1 * max(data1 + data2), padding=0)
-        print(name1, name2)
+        
+        self.legend.removeItem(s1)
+        self.legend.removeItem(s2)       
+        self.legend.addItem(s1, name1)
+        self.legend.addItem(s2, name2)
         
         if self.queryString:
             base_seg, _ = Segmenter.select(
@@ -358,6 +376,8 @@ class Positions(OWTextableBaseWidget):
         self.output_segmentation = output_seg
 
         progressBar.finish()
+        self.controlArea.setDisabled(False)
+        self.mainArea.setDisabled(False)
         
         
     def send_report(self):
