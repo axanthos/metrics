@@ -8,7 +8,7 @@ from setuptools import setup, find_packages
 NAME = 'Orange3-Ancient-Greek-Metrics'
 DOCUMENTATION_NAME = 'Ancient Greek Metrics'
 
-VERSION = "0.0.2"
+VERSION = "0.0.3"
 
 DESCRIPTION = "Add-on for analyzing Ancient Greek metrics"
 LONG_DESCRIPTION = open(path.join(path.dirname(__file__), 'README.md')).read()
@@ -33,9 +33,9 @@ DATA_FILES = [
 ]
 
 INSTALL_REQUIRES = [
-    'Orange3',
-    'Orange3-Textable',
-    'LTTL',
+    'Orange3 >= 3.7',
+    'Orange3-Textable >= 3.1.0b3',
+    'LTTL >= 2.0.6',
 ]
 
 ENTRY_POINTS = {

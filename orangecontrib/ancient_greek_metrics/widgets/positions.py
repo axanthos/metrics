@@ -1,6 +1,6 @@
 """
 Class Positions
-Copyright 2017 LangTech Sarl (info@langtech.ch)
+Copyright 2017-2018 LangTech Sarl (info@langtech.ch)
 -----------------------------------------------------------------------------
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -76,6 +76,8 @@ class Positions(OWTextableBaseWidget):
     # Settings...
     autoSend = settings.Setting(True)
     queryString = settings.Setting("")
+    syllInitial = settings.Setting(True)
+    syllFinal = settings.Setting(True)
     normalizationMode = settings.ContextSetting("don't normalize")
     annotationKey = settings.ContextSetting("")
 
@@ -114,13 +116,41 @@ class Positions(OWTextableBaseWidget):
             master=self,
             value='queryString',
             orientation='horizontal',
-            label=u'Search this syllable/letter:',
+            label=u'Search this string:',
             labelWidth=220,
-            placeholderText="^\u03C6\u03B1$",
+            placeholderText="\u03C6\u03B1",
             callback=self.sendButton.settingsChanged,
             tooltip=(
-                u"TODO\n"
-                u"TODO"
+                u"Enter a string of 1 or more Greek letters here to count\n"
+                u"their frequency at each possible hexametric position\n"
+                u"(NB: regular expressions are allowed)." 
+            ),
+        )
+        self.searchOptionsBox = gui.indentedBox(
+            widget=self.optionsBox,
+        )
+        gui.checkBox(
+            widget=self.searchOptionsBox,
+            master=self,
+            value='syllInitial',
+            label=u'at syllable beginning',
+            labelWidth=180,
+            callback=self.sendButton.settingsChanged,
+            tooltip=(
+                u"If this box is checked, the string above will be retrieved\n"
+                u"only when it occurs at the beginning of a syllable."
+            ),
+        )
+        gui.checkBox(
+            widget=self.searchOptionsBox,
+            master=self,
+            value='syllFinal',
+            label=u'at syllable end',
+            labelWidth=180,
+            callback=self.sendButton.settingsChanged,
+            tooltip=(
+                u"If this box is checked, the string above will be retrieved\n"
+                u"only when it occurs at the end of a syllable."
             ),
         )
         gui.separator(widget=self.optionsBox, height=3)
@@ -139,8 +169,12 @@ class Positions(OWTextableBaseWidget):
             ],
             callback=self.sendButton.settingsChanged,
             tooltip=(
-                u"TODO\n"
-                u"TODO"
+                u"Choose how to normalize the frequencies (in per mille):\n\n"
+                u'- "based on total syllable number" is appropriate in most\n'
+                u"  cases\n\n"
+                u'- "based on total letter number" can be used when\n'
+                u"  searching for individual letters\n\n"
+                u'- "don\'t normalize" returns absolute counts'
             ),
         )
         gui.separator(widget=self.optionsBox, height=3)
@@ -245,7 +279,13 @@ class Positions(OWTextableBaseWidget):
             self.send("Orange table", None)
             return
 
-        regex = re.compile(self.queryString)
+        queryString = self.queryString
+        if self.syllInitial:
+            queryString = "^" + queryString
+        if self.syllFinal:
+            queryString += "$"
+            
+        regex = re.compile(queryString)
 
         total_freq = dict()
         total_freq_pos = dict()
@@ -302,6 +342,9 @@ class Positions(OWTextableBaseWidget):
                             elif self.normalizationMode  \
                                 == 'based on total letter number':
                                 output_freq[key] /= letter_count[key]
+                            if self.normalizationMode  \
+                                != "don't normalize":
+                                output_freq[key] *= 1000 
                         except KeyError:
                             pass
         else:
@@ -321,11 +364,13 @@ class Positions(OWTextableBaseWidget):
             None
         ).to_sorted(key_row_id='pos')
         
+        self.col_chart.clear()
+        
         try:
             self.legend.scene().removeItem(self.legend)
         except:
             pass
-        self.legend = myLegend((100, 70), offset=(70, 30))
+        self.legend = myLegend((100, 70), offset=(-70, 50))
         self.legend.setParentItem(self.col_chart.graphicsItem())
         
         name1 = col_ids[0]
@@ -356,11 +401,24 @@ class Positions(OWTextableBaseWidget):
         self.col_chart.addItem(s2)
         self.col_chart.setYRange(0, 1.1 * max(data1 + data2), padding=0)
         
-        self.legend.removeItem(s1)
-        self.legend.removeItem(s2)       
         self.legend.addItem(s1, name1)
         self.legend.addItem(s2, name2)
         
+        self.col_chart.setTitle(
+            "<h2>Freq. of %s at hexametric positions%s</h2>" % (
+                self.queryString,
+                " (in per mille)" 
+                    if self.normalizationMode != "don't normalize"
+                    else ""
+            )
+        )
+        #label = "<h3>Frequency</h3>"
+        # self.col_chart.setLabel(
+            # "left", 
+            # "<h3>proportion of %s-gram types (in per mille)</h3>" % n,
+        # )
+        # self.col_chart.setLabel("bottom", "<h3>Frequency range</h3>")
+
         if self.queryString:
             base_seg, _ = Segmenter.select(
                 self.segmentation, 
@@ -383,9 +441,6 @@ class Positions(OWTextableBaseWidget):
         self.mainArea.setDisabled(False)
         
         
-    def send_report(self):
-        self.report_raw('Column chart', self.col_chart.svg())
-
 
 def main():
     from PyQt4.QtGui import QApplication

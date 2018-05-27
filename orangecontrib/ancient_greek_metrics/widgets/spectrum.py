@@ -1,6 +1,6 @@
 """
 Class Spectrum
-Copyright 2017 LangTech Sarl (info@langtech.ch)
+Copyright 2017-2018 LangTech Sarl (info@langtech.ch)
 -----------------------------------------------------------------------------
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,7 +19,9 @@ import re
 import numpy as np
 
 from Orange.data import Table
-from Orange.widgets import gui, settings, widget, highcharts
+from Orange.widgets import gui, settings, widget
+
+import pyqtgraph as pg
 
 from PyQt4 import QtGui
 
@@ -27,29 +29,27 @@ from LTTL.Table import PivotCrosstab
 from LTTL.Utils import tuple_to_simple_dict
 
 # Parameters
-bin_step    = 5
+bin_step = 5
 min_num_bin = 3
 max_num_bin = 4
 skip_freq_1 = True
 
 
-class HSLineChart(highcharts.Highchart):
-    """
-    Extends Highchart and just defines some defaults:
-    * enables scroll-wheel zooming,
-    * sets the chart type to 'column' 
-    """
-    def __init__(self, selection_callback, **kwargs):
-        super().__init__(enable_zoom=True, chart_type='line', **kwargs)
-
+class myLegend(pg.LegendItem):
+    """Subclassing to modify background color..."""
+    def paint(self, p, *args):
+        p.setPen(pg.functions.mkPen(0, 0, 0)) # outline
+        p.setBrush(pg.functions.mkBrush(255, 255, 255, 200))   # background
+        p.drawRect(self.boundingRect())
+        
 
 class Spectrum(widget.OWWidget):
     """View frequency spectrum as column chart"""
     name = 'Spectrum'
-    description = 'View frequency spectrum as column chart.'
+    description = 'View frequency spectrum as line chart.'
     icon = "icons/spectrum.svg"
 
-    __version__ = '0.0.3'
+    __version__ = '0.0.4'
 
     inputs = [("Data", PivotCrosstab, "set_data")]
     outputs = [
@@ -64,21 +64,8 @@ class Spectrum(widget.OWWidget):
 
         self.data = None
 
-        # Create a column chart instance.
-        self.line_chart = HSLineChart(
-            selection_callback=None,
-            tooltip_shared=True,
-            tooltip_useHTML=True,
-            tooltip_headerFormat='<span style="font-size:10px">{point.key}</span><table>',
-            tooltip_pointFormat='<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                                '<td style="padding:0"><b>{point.y:.1f} \u2030</b></td></tr>',
-            tooltip_footerFormat='</table>',
-            debug=True
-            )
-        # Just render an empty chart so it shows a nice 'No data to display'
-        # warning
-        self.line_chart.chart()
-
+        # Create a line chart instance...
+        self.line_chart = pg.PlotWidget()
         self.controlArea.layout().addWidget(self.line_chart)
 
     def set_data(self, data):
@@ -86,7 +73,7 @@ class Spectrum(widget.OWWidget):
 
         # If the data is actually None, we should just reset the plot...
         if data is None:
-            self.line_chart.clear()
+            # self.line_chart.clear()
             self.send("Binned data in Textable format", None)
             self.send("Binned data in Orange format", None)
             return
@@ -94,35 +81,6 @@ class Spectrum(widget.OWWidget):
         # ... else replot.
         self.replot()
 
-    def exportChart(self):
-        """Display a FileDialog and export graph as SVG"""
-        filePath = QFileDialog.getSaveFileName(self, u'Export SVG file')
-
-        if filePath:
-            try:
-                outputFile = codecs.open(
-                    filePath,
-                    encoding="utf-8",
-                    mode="w",
-                )
-                outputFile.write(
-                    "<svg>" + self.col_chart.svg() + "</svg>", 
-                )
-                outputFile.close()
-                QMessageBox.information(
-                    None,
-                    'Textable',
-                    'SVG file correctly exported',
-                    QMessageBox.Ok
-                )
-            except Exception as exc:
-                print(exc)
-                QMessageBox.warning(
-                    None,
-                    'Textable',
-                    'Couldn\'t save SVG file.',
-                    QMessageBox.Ok
-                )
     def replot(self):
 
         if self.data is None:
@@ -131,8 +89,9 @@ class Spectrum(widget.OWWidget):
             self.send("Binned data in Orange format", None)
             return
 
+        self.line_chart.clear()
+        
         transposed = self.data.to_transposed()
-        options = dict(series=[])
 
         row_ids = sorted(transposed.row_ids)
         col_ids = sorted(transposed.col_ids)
@@ -163,33 +122,41 @@ class Spectrum(widget.OWWidget):
             bins.append(i)
             labels.append('%i-%i' % (i-bin_step, i-1))
         labels[0] = '%i-%i' % (lower_bound_bin, bin_step)
-
+        self.line_chart.getAxis('bottom').setTicks([enumerate(labels)])
+        
         # Plot spectrum...
+        try:
+            self.legend.scene().removeItem(self.legend)
+        except:
+            pass
+        self.legend = myLegend((100, 70), offset=(-70, 50))
+        self.legend.setParentItem(self.line_chart.graphicsItem())
         spectrum = dict()
         n = re.search(r'\d+', transposed.header_row_id).group()
-        for row_id in row_ids:
+        for idx, row_id in enumerate(row_ids):
             hist, bins = np.histogram(freq[row_id], bins)
             hist = hist.astype('float_') / sum(freq[row_id]) * 1000
-            options['series'].append(dict(data=hist, name=row_id))
+            line = self.line_chart.plot(
+                hist, 
+                pen=pg.intColor(
+                    idx, 
+                    hues=len(row_ids), 
+                    minValue=32, 
+                    maxValue=224,
+                ),
+            )
+            self.legend.addItem(line, row_id)
             if len(row_ids) == 1:
                 row_id = 'proportion of %s-gram types (in per mille)' % n
                 row_ids = [row_id]
             for i in range(len(labels)):
                 spectrum[(row_id, labels[i])] =  hist[i]
-        options['title'] = dict(text='%s-gram frequency spectrum' % n)
-        options['yAxis'] = dict(
-            title=dict(
-                text='proportion of %s-gram types (in per mille)' % n
-            )
-        )           
-        options['xAxis'] = dict(
-            title=dict(text='Frequency range'),
-            categories=labels,
-            tickmarkPlacement='on',
-        )           
-        
-        kwargs = dict()
-        self.line_chart.chart(options, **kwargs)
+        self.line_chart.setTitle("<h2>%s-gram frequency spectrum</h2>" % n)
+        self.line_chart.setLabel(
+            "left", 
+            "<h3>proportion of %s-gram types (in per mille)</h3>" % n,
+        )
+        self.line_chart.setLabel("bottom", "<h3>Frequency range</h3>")
 
         # Build and send table...
         output_table = PivotCrosstab(
@@ -210,9 +177,6 @@ class Spectrum(widget.OWWidget):
         self.send("Binned data in Orange format", output_table.to_orange_table())
         
         
-    def send_report(self):
-        self.report_raw('Line chart', self.line_chart.svg())
-
 
 def main():
     from PyQt4.QtGui import QApplication

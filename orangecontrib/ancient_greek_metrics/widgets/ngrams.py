@@ -1,6 +1,6 @@
 """
 Class NGrams
-Copyright 2017 LangTech Sarl (info@langtech.ch)
+Copyright 2017-2018 LangTech Sarl (info@langtech.ch)
 -----------------------------------------------------------------------------
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@ from _textable.widgets.TextableUtils import (
     InfoBox, 
     SendButton, 
     SegmentationContextHandler,
+    ProgressBar,
 )
 
 # Parameters...
@@ -38,7 +39,7 @@ class NGrams(OWTextableBaseWidget):
     description = 'Fast(er) ngram count'
     icon = "icons/NGram.png"
 
-    __version__ = '0.0.2'
+    __version__ = '0.0.3'
 
     inputs = [('Segmentation', Segmentation, "inputData", widget.Single)]
     outputs = [
@@ -168,10 +169,11 @@ class NGrams(OWTextableBaseWidget):
         else:
             source  = 'frequency'
             sources = [source]
-        progressBar = gui.ProgressBar(
+        progressBar = ProgressBar(
             self,
             iterations=len(self.segmentation) - len(sources)*(sequenceLength-1)
         )
+        self.controlArea.setDisabled(True)
         for source in sources:
             if annotationKey:
                 contents = [
@@ -256,6 +258,7 @@ class NGrams(OWTextableBaseWidget):
             self.send('Orange summary table', summary.to_orange_table())
 
         progressBar.finish()
+        self.controlArea.setDisabled(False)
         self.infoBox.setText(u'Tables correctly sent to output.')
 
         self.sendButton.resetSettingsChangedFlag()
