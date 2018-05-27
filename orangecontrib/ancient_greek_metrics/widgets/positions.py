@@ -181,8 +181,6 @@ class Positions(OWTextableBaseWidget):
         ])).items()])
         self.col_chart = pg.PlotWidget(axisItems={'bottom': stringaxis})
         self.mainArea.layout().addWidget(self.col_chart)      
-        self.legend = myLegend((100, 80), offset=(70, 30))
-        self.legend.setParentItem(self.col_chart.graphicsItem())
         
         self.sendButton.sendIf()
         self.adjustSizeWithTimer()
@@ -323,7 +321,12 @@ class Positions(OWTextableBaseWidget):
             None
         ).to_sorted(key_row_id='pos')
         
-        # TODO: fix Legend REPLOT
+        try:
+            self.legend.scene().removeItem(self.legend)
+        except:
+            pass
+        self.legend = myLegend((100, 70), offset=(70, 30))
+        self.legend.setParentItem(self.col_chart.graphicsItem())
         
         name1 = col_ids[0]
         data1 = list(
