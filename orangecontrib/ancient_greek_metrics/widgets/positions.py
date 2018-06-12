@@ -45,12 +45,20 @@ from _textable.widgets.TextableUtils import (
 SYLLABLE_ANNOTATION_KEY = 'p'
 REFERENCE_ANNOTATION_KEY = 'r'
 
+POSITIONS = [
+    "1", "10", "11", "12", 
+    "2", "20", "21", "22", 
+    "3", "30", "31", "32", 
+    "4", "40", "41", "42", 
+    "5", "50", "51", "52", 
+    "6", "60",
+]
 
 class myLegend(pg.LegendItem):
     """Subclassing to modify background color..."""
     def paint(self, p, *args):
         p.setPen(pg.functions.mkPen(0, 0, 0)) # outline
-        p.setBrush(pg.functions.mkBrush(255, 255, 255, 200))   # background
+        p.setBrush(pg.functions.mkBrush(255, 255, 255, 64))   # background
         p.drawRect(self.boundingRect())
         
 
@@ -60,7 +68,7 @@ class Positions(OWTextableBaseWidget):
     description = 'Visualize syllable/letter occurrences at hexametric positions.'
     icon = "icons/positions.svg"
 
-    __version__ = '0.0.3'
+    __version__ = '0.0.4'
 
     inputs = [('Segmentation', Segmentation, "inputData", widget.Single)]
     outputs = [
@@ -205,14 +213,7 @@ class Positions(OWTextableBaseWidget):
 
         # Create a bar chart instance...
         stringaxis = pg.AxisItem(orientation='bottom')
-        stringaxis.setTicks([dict(enumerate([
-            "1", "10", "11", "12", 
-            "2", "20", "21", "22", 
-            "3", "30", "31", "32", 
-            "4", "40", "41", "42", 
-            "5", "50", "51", "52", 
-            "6", "60",
-        ])).items()])
+        stringaxis.setTicks([dict(enumerate(POSITIONS)).items()])
         self.col_chart = pg.PlotWidget(axisItems={'bottom': stringaxis})
         self.mainArea.layout().addWidget(self.col_chart)      
         
@@ -279,7 +280,7 @@ class Positions(OWTextableBaseWidget):
             self.send("Orange table", None)
             return
 
-        queryString = self.queryString
+        queryString = "(?:%s)" % self.queryString
         if self.syllInitial:
             queryString = "^" + queryString
         if self.syllFinal:
@@ -304,15 +305,15 @@ class Positions(OWTextableBaseWidget):
             source = syllable.annotations[self.annotationKey]
             total_freq[(pos, source)] = total_freq.get((pos, source), 0 )+1
             total_freq_pos[pos] = total_freq.get(pos, 0 ) + 1
-            total_freq_source[source] = total_freq.get(source, 0 ) + 1
+            total_freq_source[source] = total_freq.get(source, 0) + 1
             if self.queryString:
                 content = syllable.get_content()
-                freq[(pos, source)] = freq.get((pos, source), 0 ) + len(
+                freq[(pos, source)] = freq.get((pos, source), 0) + len(
                     re.findall(regex, content)
                 )
                 if self.normalizationMode == 'based on total letter number':
                     letter_count[(pos, source)] =   \
-                        letter_count.get((pos, source), 0 ) + len(content)
+                        letter_count.get((pos, source), 0) + len(content)
             progressBar.advance()
 
         row_ids = list(total_freq_pos.keys())
@@ -322,7 +323,6 @@ class Positions(OWTextableBaseWidget):
         header_col_id = 'pos'
         header_col_type = 'string'
         col_type = dict((k, 'continuous') for k in total_freq_source.keys())
-
         output_freq = dict()
         table_creator = IntPivotCrosstab
         if self.queryString:
@@ -374,9 +374,8 @@ class Positions(OWTextableBaseWidget):
         self.legend.setParentItem(self.col_chart.graphicsItem())
         
         name1 = col_ids[0]
-        data1 = list(
-            tuple_to_simple_dict_transpose(output_freq, name1).values()
-        )
+        dist1 = my_tuple_to_simple_dict_transpose(output_freq, name1)
+        data1 = [dist1[k] for k in sorted(dist1)]
         s1 = pg.BarGraphItem(
             x=np.arange(len(data1))-0.15,
             height=data1,
@@ -387,9 +386,8 @@ class Positions(OWTextableBaseWidget):
         )
         self.col_chart.addItem(s1)
         name2 = col_ids[1]
-        data2 = list(
-            tuple_to_simple_dict_transpose(output_freq, name2).values()
-        )
+        dist2 = my_tuple_to_simple_dict_transpose(output_freq, name2)
+        data2 = [dist2[k] for k in sorted(dist2)]
         s2 = pg.BarGraphItem(
             x=np.arange(len(data2))+0.15,
             height=data2,
@@ -404,20 +402,19 @@ class Positions(OWTextableBaseWidget):
         self.legend.addItem(s1, name1)
         self.legend.addItem(s2, name2)
         
-        self.col_chart.setTitle(
-            "<h2>Freq. of %s at hexametric positions%s</h2>" % (
-                self.queryString,
-                " (in per mille)" 
-                    if self.normalizationMode != "don't normalize"
-                    else ""
+        if self.queryString:
+            self.col_chart.setTitle(
+                "<h2>Freq. of %s at hexametric positions%s</h2>" % (
+                    self.queryString,
+                    " (in per mille)" 
+                        if self.normalizationMode != "don't normalize"
+                        else ""
+                )
             )
-        )
-        #label = "<h3>Frequency</h3>"
-        # self.col_chart.setLabel(
-            # "left", 
-            # "<h3>proportion of %s-gram types (in per mille)</h3>" % n,
-        # )
-        # self.col_chart.setLabel("bottom", "<h3>Frequency range</h3>")
+        else:
+            self.col_chart.setTitle(
+                "<h2>Syllable count at hexametric positions</h2>"
+            )
 
         if self.queryString:
             base_seg, _ = Segmenter.select(
@@ -440,7 +437,14 @@ class Positions(OWTextableBaseWidget):
         self.controlArea.setDisabled(False)
         self.mainArea.setDisabled(False)
         
-        
+    
+def my_tuple_to_simple_dict_transpose(my_dict, key):
+    simple_dict = tuple_to_simple_dict_transpose(my_dict, key)
+    for key in POSITIONS:
+        if key not in simple_dict:
+            simple_dict[key] = 0
+    return simple_dict
+    
 
 def main():
     from PyQt4.QtGui import QApplication
