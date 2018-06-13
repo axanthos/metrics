@@ -303,16 +303,16 @@ class Positions(OWTextableBaseWidget):
         for syllable in self.segmentation:
             pos = syllable.annotations[SYLLABLE_ANNOTATION_KEY]
             source = syllable.annotations[self.annotationKey]
-            total_freq[(pos, source)] = total_freq.get((pos, source), 0 )+1
-            total_freq_pos[pos] = total_freq.get(pos, 0 ) + 1
+            total_freq[pos, source] = total_freq.get((pos, source), 0)+1
+            total_freq_pos[pos] = total_freq.get(pos, 0) + 1
             total_freq_source[source] = total_freq.get(source, 0) + 1
             if self.queryString:
                 content = syllable.get_content()
-                freq[(pos, source)] = freq.get((pos, source), 0) + len(
+                freq[pos, source] = freq.get((pos, source), 0) + len(
                     re.findall(regex, content)
                 )
                 if self.normalizationMode == 'based on total letter number':
-                    letter_count[(pos, source)] =   \
+                    letter_count[pos, source] =   \
                         letter_count.get((pos, source), 0) + len(content)
             progressBar.advance()
 
@@ -327,10 +327,7 @@ class Positions(OWTextableBaseWidget):
         table_creator = IntPivotCrosstab
         if self.queryString:
             output_freq.update(freq)
-            if (
-                   self.normalizationMode == 'based on total syllable number'
-                or self.normalizationMode == 'based on total letter number'
-            ):
+            if self.normalizationMode != "don't normalize":
                 table_creator = PivotCrosstab
                 for row_id in row_ids:
                     for col_id in col_ids:
@@ -342,9 +339,7 @@ class Positions(OWTextableBaseWidget):
                             elif self.normalizationMode  \
                                 == 'based on total letter number':
                                 output_freq[key] /= letter_count[key]
-                            if self.normalizationMode  \
-                                != "don't normalize":
-                                output_freq[key] *= 1000 
+                            output_freq[key] *= 1000 
                         except KeyError:
                             pass
         else:
