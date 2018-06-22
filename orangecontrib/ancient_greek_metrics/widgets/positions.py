@@ -68,7 +68,7 @@ class Positions(OWTextableBaseWidget):
     description = 'Visualize syllable/letter occurrences at hexametric positions.'
     icon = "icons/positions.svg"
 
-    __version__ = '0.0.4'
+    __version__ = '0.0.5'
 
     inputs = [('Segmentation', Segmentation, "inputData", widget.Single)]
     outputs = [
@@ -141,7 +141,7 @@ class Positions(OWTextableBaseWidget):
             widget=self.searchOptionsBox,
             master=self,
             value='syllInitial',
-            label=u'at syllable beginning',
+            label=u'only at syllable beginning',
             labelWidth=180,
             callback=self.sendButton.settingsChanged,
             tooltip=(
@@ -153,7 +153,7 @@ class Positions(OWTextableBaseWidget):
             widget=self.searchOptionsBox,
             master=self,
             value='syllFinal',
-            label=u'at syllable end',
+            label=u'only at syllable end',
             labelWidth=180,
             callback=self.sendButton.settingsChanged,
             tooltip=(
