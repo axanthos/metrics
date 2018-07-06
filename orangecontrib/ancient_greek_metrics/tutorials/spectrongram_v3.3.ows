@@ -1,0 +1,153 @@
+<?xml version='1.0' encoding='utf-8'?>
+<scheme description="A Textable schema for studying n-gram frequencies and their spectrum.&#10;Made by LangTech Sàrl on behalf of the University of Lausanne.&#10;&#10;(Adapted for Textable v3.1.0b2)" title="SpectroNgram v3.3" version="2.0">
+	<nodes>
+		<node id="0" name="Text Files" position="(197.0, 168.0)" project_name="Orange3-Textable" qualified_name="_textable.widgets.OWTextableTextFiles.OWTextableTextFiles" title="Texts in &quot;Homer&quot; format" version="" />
+		<node id="1" name="Preprocess" position="(414.0, 173.0)" project_name="Orange3-Textable" qualified_name="_textable.widgets.OWTextablePreprocess.OWTextablePreprocess" title="Preprocess" version="" />
+		<node id="2" name="Recode" position="(289.0, 168.0)" project_name="Orange3-Textable" qualified_name="_textable.widgets.OWTextableRecode.OWTextableRecode" title="Recode" version="" />
+		<node id="3" name="Segment" position="(420.0, 382.0)" project_name="Orange3-Textable" qualified_name="_textable.widgets.OWTextableSegment.OWTextableSegment" title="Line segmentation" version="" />
+		<node id="4" name="Segment" position="(482.0, 273.0)" project_name="Orange3-Textable" qualified_name="_textable.widgets.OWTextableSegment.OWTextableSegment" title="Unit Segmentation" version="" />
+		<node id="5" name="Merge" position="(345.0, 272.0)" project_name="Orange3-Textable" qualified_name="_textable.widgets.OWTextableMerge.OWTextableMerge" title="Merge" version="" />
+		<node id="6" name="Text Files" position="(160.0, 273.0)" project_name="Orange3-Textable" qualified_name="_textable.widgets.OWTextableTextFiles.OWTextableTextFiles" title="Texts in &quot;Plato&quot; format" version="" />
+		<node id="7" name="Convert" position="(607.0, 278.0)" project_name="Orange3-Textable" qualified_name="_textable.widgets.OWTextableConvert.OWTextableConvert" title="Export frequency table" version="" />
+		<node id="8" name="Convert" position="(752.0, 171.0)" project_name="Orange3-Textable" qualified_name="_textable.widgets.OWTextableConvert.OWTextableConvert" title="Export frequency spectrum table" version="" />
+		<node id="9" name="Text Files" position="(121.0, 372.0)" project_name="Orange3-Textable" qualified_name="_textable.widgets.OWTextableTextFiles.OWTextableTextFiles" title="Texts in &quot;Quintus&quot; format" version="" />
+		<node id="10" name="Recode" position="(218.0, 372.0)" project_name="Orange3-Textable" qualified_name="_textable.widgets.OWTextableRecode.OWTextableRecode" title="Recode (1)" version="" />
+		<node id="11" name="Recode" position="(255.0, 273.0)" project_name="Orange3-Textable" qualified_name="_textable.widgets.OWTextableRecode.OWTextableRecode" title="Recode (2)" version="" />
+		<node id="12" name="Text Files" position="(70.0, 474.0)" project_name="Orange3-Textable" qualified_name="_textable.widgets.OWTextableTextFiles.OWTextableTextFiles" title="Text Files" version="" />
+		<node id="13" name="Preprocess" position="(173.0, 473.0)" project_name="Orange3-Textable" qualified_name="_textable.widgets.OWTextablePreprocess.OWTextablePreprocess" title="Preprocess (1)" version="" />
+		<node id="14" name="Merge" position="(308.0, 459.0)" project_name="Orange3-Textable" qualified_name="_textable.widgets.OWTextableMerge.OWTextableMerge" title="Merge (1)" version="" />
+		<node id="15" name="Data Table" position="(651.0, 86.0)" project_name="Orange3" qualified_name="Orange.widgets.data.owtable.OWDataTable" title="Data Table" version="" />
+		<node id="16" name="Ngrams" position="(556.0, 171.0)" project_name="Orange3-Ancient-Greek-Metrics" qualified_name="orangecontrib.ancient_greek_metrics.widgets.ngrams.NGrams" title="Ngrams" version="" />
+		<node id="17" name="Data Table" position="(865.0, 171.0)" project_name="Orange3" qualified_name="Orange.widgets.data.owtable.OWDataTable" title="Display frequency spectrum table" version="" />
+		<node id="18" name="Data Table" position="(653.0, 388.0)" project_name="Orange3" qualified_name="Orange.widgets.data.owtable.OWDataTable" title="Display n-gram frequencies" version="" />
+		<node id="19" name="Spectrum" position="(653.0, 171.0)" project_name="Orange3-Ancient-Greek-Metrics" qualified_name="orangecontrib.ancient_greek_metrics.widgets.spectrum.Spectrum" title="Spectrum" version="" />
+	</nodes>
+	<links>
+		<link enabled="true" id="0" sink_channel="Segmentation" sink_node_id="4" source_channel="Segmented data" source_node_id="3" />
+		<link enabled="true" id="1" sink_channel="Segmentation" sink_node_id="2" source_channel="Text data" source_node_id="0" />
+		<link enabled="true" id="2" sink_channel="Segmentation" sink_node_id="1" source_channel="Merged data" source_node_id="5" />
+		<link enabled="true" id="3" sink_channel="Segmentation" sink_node_id="5" source_channel="Recoded data" source_node_id="2" />
+		<link enabled="true" id="4" sink_channel="Segmentation" sink_node_id="10" source_channel="Text data" source_node_id="9" />
+		<link enabled="true" id="5" sink_channel="Segmentation" sink_node_id="5" source_channel="Recoded data" source_node_id="10" />
+		<link enabled="true" id="6" sink_channel="Segmentation" sink_node_id="11" source_channel="Text data" source_node_id="6" />
+		<link enabled="true" id="7" sink_channel="Segmentation" sink_node_id="5" source_channel="Recoded data" source_node_id="11" />
+		<link enabled="true" id="8" sink_channel="Segmentation" sink_node_id="13" source_channel="Text data" source_node_id="12" />
+		<link enabled="true" id="9" sink_channel="Segmentation" sink_node_id="14" source_channel="Preprocessed data" source_node_id="13" />
+		<link enabled="true" id="10" sink_channel="Segmentation" sink_node_id="3" source_channel="Merged data" source_node_id="14" />
+		<link enabled="true" id="11" sink_channel="Segmentation" sink_node_id="14" source_channel="Preprocessed data" source_node_id="1" />
+		<link enabled="true" id="12" sink_channel="Segmentation" sink_node_id="16" source_channel="Segmented data" source_node_id="4" />
+		<link enabled="true" id="13" sink_channel="Data" sink_node_id="17" source_channel="Orange table" source_node_id="8" />
+		<link enabled="true" id="14" sink_channel="Textable table" sink_node_id="7" source_channel="Textable detailed table" source_node_id="16" />
+		<link enabled="true" id="15" sink_channel="Data" sink_node_id="18" source_channel="Orange table" source_node_id="7" />
+		<link enabled="true" id="16" sink_channel="Data" sink_node_id="15" source_channel="Orange summary table" source_node_id="16" />
+		<link enabled="true" id="17" sink_channel="Data" sink_node_id="19" source_channel="Textable detailed table" source_node_id="16" />
+		<link enabled="true" id="18" sink_channel="Textable table" sink_node_id="8" source_channel="Binned data in Textable format" source_node_id="19" />
+	</links>
+	<annotations>
+		<arrow end="(549.9999999999998, 134.99999999999994)" fill="#C1272D" id="0" start="(523.0, 85.99999999999989)" />
+		<text font-family="Helvetica" font-size="16" id="1" rect="(399.0, 52.0, 226.0, 59.0)" type="text/plain">N-gram size can be changed in this widget.</text>
+		<text font-family="Helvetica" font-size="16" id="2" rect="(23.0, 32.0, 160.0, 164.0)" type="text/plain">Double-click to open and select input texts. Don't forget to set annotation key to "source" and value to something useful (e.g. "iliad").</text>
+		<arrow end="(92.99999999999996, 333.0000000000001)" fill="#C1272D" id="3" start="(63.99999999999996, 181.00000000000009)" />
+		<arrow end="(129.99999999999997, 245.00000000000009)" fill="#C1272D" id="4" start="(91.99999999999997, 180.00000000000009)" />
+		<text font-family="Helvetica" font-size="20" id="5" rect="(22.0, 4.0, 176.0, 36.0)" type="text/plain">1. Text import</text>
+		<text font-family="Helvetica" font-size="20" id="6" rect="(212.0, 5.0, 174.0, 60.0)" type="text/plain">2. Preprocessing</text>
+		<text font-family="Helvetica" font-size="16" id="7" rect="(204.0, 31.0, 196.0, 71.0)" type="text/plain">Here you can (de)activate diacritic removal and/or conversion to lowercase </text>
+		<arrow end="(407.0, 139.9999999999999)" fill="#C1272D" id="8" start="(383.00000000000006, 95.99999999999991)" />
+		<text font-family="Helvetica" font-size="20" id="9" rect="(417.0, 27.0, 206.0, 41.0)" type="text/plain">4. Set n-gram size</text>
+		<text font-family="Helvetica" font-size="20" id="10" rect="(683.0, 4.0, 234.0, 60.0)" type="text/plain">5. Total n-gram counts</text>
+		<text font-family="Helvetica" font-size="16" id="11" rect="(364.0, 502.0, 401.0, 107.0)" type="text/plain">Open "Display..." and "Export..." above to view the distribution of n-grams in table format and export it.. Sort order can be changed using the "Sort columns by row" control.</text>
+		<text font-family="Helvetica" font-size="16" id="12" rect="(707.0, 327.0, 195.0, 145.0)" type="text/plain">Open Spectrum above to view the spectrum chart. Open "Display..." and "Export..." above to view the spectrum in table format and export it.</text>
+		<arrow end="(688.0, 66.00000000000009)" fill="#C1272D" id="13" start="(709.0, 50.00000000000008)" />
+		<text font-family="Helvetica" font-size="20" id="14" rect="(690.0, 290.0, 238.0, 41.0)" type="text/plain">6. Frequency spectrum</text>
+		<arrow end="(763.9999999999998, 237.9999999999999)" fill="#C1272D" id="15" start="(776.0, 293.9999999999999)" />
+		<arrow end="(853.0, 238.0)" fill="#C1272D" id="16" start="(837.0000000000001, 296.0)" />
+		<arrow end="(153.99999999999997, 166.00000000000006)" fill="#C1272D" id="17" start="(121.99999999999994, 161.99999999999994)" />
+		<text font-family="Helvetica" font-size="16" id="18" rect="(711.0, 32.0, 191.0, 88.0)" type="text/plain">Double-click to view the total type and token count in the source files</text>
+		<text font-family="Helvetica" font-size="20" id="19" rect="(423.0, 475.0, 258.0, 60.0)" type="text/plain">7. Export n-gram frequency</text>
+		<arrow end="(589.0, 351.0)" fill="#C1272D" id="20" start="(536.0, 477.0)" />
+		<text font-family="Helvetica" font-size="20" id="21" rect="(67.0, 526.0, 220.0, 60.0)" type="text/plain">3. Validate parameters</text>
+		<text font-family="Helvetica" font-size="16" id="22" rect="(47.0, 549.0, 279.0, 107.0)" type="text/plain">Once all source texts have been selected (1) and preprocessing has been configured (2), click the "Send" button to trigger further processing.</text>
+		<arrow end="(273.0000000000001, 475.0)" fill="#C1272D" id="23" start="(238.00000000000006, 519.0)" />
+		<arrow end="(314.0, 325.0)" fill="#C1272D" id="24" start="(225.0, 519.0)" />
+		<arrow end="(59.0, 441.0)" fill="#C1272D" id="25" start="(45.0, 181.0)" />
+		<arrow end="(617.0, 405.0)" fill="#C1272D" id="26" start="(555.0, 480.0)" />
+		<arrow end="(681.0, 223.0)" fill="#C1272D" id="27" start="(730.0, 296.0)" />
+	</annotations>
+	<thumbnail />
+	<node_properties>
+		<properties format="literal" node_id="0">{'autoNumber': False, 'autoNumberKey': 'num', 'autoSend': True, 'controlAreaVisible': True, 'displayAdvancedSettings': True, 'encoding': 'utf8', 'file': 'F:\\Dropbox\\transfert\\david_bouvier\\spectroNgram\\homer_format_file_list.txt', 'files': [('F:\\langtech\\Textable\\schemas\\bouvier\\spectroNgram\\iliade.txt', 'utf8', 'source', 'Iliade'), ('F:\\langtech\\Textable\\schemas\\bouvier\\spectroNgram\\odyssee.txt', 'utf8', 'source', 'Odyssee')], 'importFilenames': True, 'importFilenamesKey': 'filename', 'lastLocation': 'F:\\langtech\\Textable\\schemas\\bouvier\\spectroNgram', 'savedWidgetGeometry': b'\x01\xd9\xd0\xcb\x00\x02\x00\x00\x00\x00\x02\xd5\x00\x00\x00\xbc\x00\x00\x04\xa6\x00\x00\x03\xde\x00\x00\x02\xdd\x00\x00\x00\xdb\x00\x00\x04\x9e\x00\x00\x03\xd6\x00\x00\x00\x00\x00\x00\x00\x00\x06\x90', 'uuid': 'a9faa108-fdcf-4a07-b571-8d1d75a62a3a', '__version__': 1, '_TextableUtils_settings_version__': (0, 17)}</properties>
+		<properties format="literal" node_id="1">{'applyCaseTransform': True, 'autoSend': True, 'caseTransform': 'to lower', 'controlAreaVisible': True, 'copyAnnotations': True, 'removeAccents': False, 'savedWidgetGeometry': b'\x01\xd9\xd0\xcb\x00\x02\x00\x00\x00\x00\x03\x10\x00\x00\x01\xbe\x00\x00\x04e\x00\x00\x02\xe5\x00\x00\x03\x14\x00\x00\x01\xd5\x00\x00\x04a\x00\x00\x02\xe1\x00\x00\x00\x00\x00\x00\x00\x00\x06\x90', 'uuid': 'b5785dad-8aef-4d80-891a-3011b1ee29b7', '__version__': 1, '_TextableUtils_settings_version__': (0, 11)}</properties>
+		<properties format="literal" node_id="2">{'autoSend': True, 'controlAreaVisible': True, 'copyAnnotations': True, 'displayAdvancedSettings': True, 'lastLocation': 'F:/langtech/Textable/schemas/bouvier/spectroNgram', 'regex': '', 'replString': '', 'savedWidgetGeometry': b'\x01\xd9\xd0\xcb\x00\x02\x00\x00\x00\x00\x02\x89\x00\x00\x00\x9b\x00\x00\x04\x16\x00\x00\x03|\x00\x00\x02\x91\x00\x00\x00\xba\x00\x00\x04\x0e\x00\x00\x03t\x00\x00\x00\x00\x00\x00\x00\x00\x06\x90', 'substitutions': [('^([^\\t]+\\t){2}([^\\t]+).+$', '&amp;2', False, True, True, False)], 'uuid': '1746de73-3dc3-4a8e-b56a-41621b62d830', '__version__': 1, '_TextableUtils_settings_version__': (0, 13)}</properties>
+		<properties format="literal" node_id="3">{'autoNumber': False, 'autoNumberKey': 'num', 'autoSend': True, 'controlAreaVisible': True, 'displayAdvancedSettings': False, 'importAnnotations': True, 'lastLocation': '.', 'mergeDuplicates': False, 'mode': 'Tokenize', 'regex': '', 'regexes': [], 'savedWidgetGeometry': b'\x01\xd9\xd0\xcb\x00\x01\x00\x00\x00\x00\x03;\x00\x00\x01\xc3\x00\x00\x04@\x00\x00\x02\xd7\x00\x00\x03C\x00\x00\x01\xe2\x00\x00\x048\x00\x00\x02\xcf\x00\x00\x00\x00\x00\x00', 'segmentType': 'Segment into lines', 'uuid': '566ab880-430d-4ad7-95f8-19cf504ae0a8', '__version__': 1, '_TextableUtils_settings_version__': (0, 21)}</properties>
+		<properties format="literal" node_id="4">{'autoNumber': False, 'autoNumberKey': 'num', 'autoSend': True, 'controlAreaVisible': True, 'displayAdvancedSettings': False, 'importAnnotations': True, 'lastLocation': '.', 'mergeDuplicates': False, 'mode': 'Tokenize', 'regex': '', 'regexes': [], 'savedWidgetGeometry': b'\x01\xd9\xd0\xcb\x00\x01\x00\x00\x00\x00\x03;\x00\x00\x01\xce\x00\x00\x04@\x00\x00\x02\xcd\x00\x00\x03C\x00\x00\x01\xed\x00\x00\x048\x00\x00\x02\xc5\x00\x00\x00\x00\x00\x00', 'segmentType': 'Segment into words', 'uuid': '5471dfbf-0ca9-415a-90cb-0483f2164443', '__version__': 1, '_TextableUtils_settings_version__': (0, 21)}</properties>
+		<properties format="literal" node_id="5">{'autoNumber': False, 'autoNumberKey': 'num', 'autoSend': False, 'controlAreaVisible': True, 'copyAnnotations': True, 'importLabels': False, 'labelKey': 'input_label', 'mergeDuplicates': False, 'savedWidgetGeometry': b'\x01\xd9\xd0\xcb\x00\x02\x00\x00\x00\x00\x02\xf4\x00\x00\x01\xa1\x00\x00\x04\x87\x00\x00\x02\xf9\x00\x00\x02\xfc\x00\x00\x01\xc0\x00\x00\x04\x7f\x00\x00\x02\xf1\x00\x00\x00\x00\x00\x00\x00\x00\x06\x90', 'uuid': '451a9036-09b2-4154-8c8a-5c3f1309d16c', '__version__': 1, '_TextableUtils_settings_version__': (0, 21)}</properties>
+		<properties format="literal" node_id="6">{'autoNumber': False, 'autoNumberKey': 'num', 'autoSend': True, 'controlAreaVisible': True, 'displayAdvancedSettings': True, 'encoding': 'utf8', 'file': 'F:\\Dropbox\\transfert\\david_bouvier\\spectroNgram\\plato_format_file_list.txt', 'files': [('F:\\langtech\\Textable\\schemas\\bouvier\\spectroNgram\\platon_lois_7_livres.txt', 'utf8', 'source', 'Platon')], 'importFilenames': True, 'importFilenamesKey': 'filename', 'lastLocation': 'F:\\langtech\\Textable\\schemas\\bouvier\\spectroNgram', 'savedWidgetGeometry': b'\x01\xd9\xd0\xcb\x00\x02\x00\x00\x00\x00\x02g\x00\x00\x00{\x00\x00\x048\x00\x00\x03\x9d\x00\x00\x02o\x00\x00\x00\x9a\x00\x00\x040\x00\x00\x03\x95\x00\x00\x00\x00\x00\x00\x00\x00\x06\x90', 'uuid': '81cdb2c6-b6ca-4623-951a-0781fcf9dee4', '__version__': 1, '_TextableUtils_settings_version__': (0, 17)}</properties>
+		<properties format="literal" node_id="7">{'associationBias': 'none', 'autoSend': True, 'colDelimiter_idx': 0, 'controlAreaVisible': True, 'conversionType': 'association matrix', 'convert': False, 'displayAdvancedSettings': False, 'exportEncoding': 'utf8', 'includeOrangeHeaders': False, 'lastLocation': 'C:/Users/Utilisateur/Desktop', 'normalize': False, 'normalizeMode': 'rows', 'normalizeType': 'l1', 'reformat': False, 'savedWidgetGeometry': b'\x01\xd9\xd0\xcb\x00\x02\x00\x00\x00\x00\x02\x82\x00\x00\x01d\x00\x00\x04!\x00\x00\x02x\x00\x00\x02\x8a\x00\x00\x01\x83\x00\x00\x04\x19\x00\x00\x02p\x00\x00\x00\x00\x00\x00\x00\x00\x06\x90', 'sortCols': False, 'sortColsReverse': False, 'sortRows': False, 'sortRowsReverse': False, 'transpose': True, 'unweighted': False, 'uuid': '00672f8e-457f-4e5b-a78e-aaf46f425e6f', '__version__': 1, '_TextableUtils_settings_version__': (0, 19)}</properties>
+		<properties format="literal" node_id="8">{'associationBias': 'none', 'autoSend': True, 'colDelimiter_idx': 0, 'controlAreaVisible': True, 'conversionType': 'association matrix', 'convert': False, 'displayAdvancedSettings': False, 'exportEncoding': 'utf8', 'includeOrangeHeaders': False, 'lastLocation': '.', 'normalize': False, 'normalizeMode': 'rows', 'normalizeType': 'l1', 'reformat': False, 'savedWidgetGeometry': b'\x01\xd9\xd0\xcb\x00\x02\x00\x00\x00\x00\x02\x82\x00\x00\x01d\x00\x00\x04!\x00\x00\x02x\x00\x00\x02\x8a\x00\x00\x01\x83\x00\x00\x04\x19\x00\x00\x02p\x00\x00\x00\x00\x00\x00\x00\x00\x06\x90', 'sortCols': False, 'sortColsReverse': False, 'sortRows': False, 'sortRowsReverse': False, 'transpose': False, 'unweighted': False, 'uuid': '19d61592-884c-44a4-ad7c-6ef2b1bc294d', '__version__': 1, '_TextableUtils_settings_version__': (0, 19)}</properties>
+		<properties format="literal" node_id="9">{'autoNumber': False, 'autoNumberKey': 'num', 'autoSend': True, 'controlAreaVisible': True, 'displayAdvancedSettings': True, 'encoding': 'utf8', 'file': 'F:\\Dropbox\\transfert\\david_bouvier\\spectroNgram\\quintus_format_file_list.txt', 'files': [('F:\\langtech\\Textable\\schemas\\bouvier\\spectroNgram\\quintus_cleaned_up.txt', 'utf8', 'source', 'Quintus')], 'importFilenames': True, 'importFilenamesKey': 'filename', 'lastLocation': 'F:\\langtech\\Textable\\schemas\\bouvier\\spectroNgram', 'savedWidgetGeometry': b'\x01\xd9\xd0\xcb\x00\x02\x00\x00\x00\x00\x02g\x00\x00\x00{\x00\x00\x048\x00\x00\x03\x9d\x00\x00\x02o\x00\x00\x00\x9a\x00\x00\x040\x00\x00\x03\x95\x00\x00\x00\x00\x00\x00\x00\x00\x06\x90', 'uuid': 'da26cf86-21d1-4cab-a27a-6ff985b8f010', '__version__': 1, '_TextableUtils_settings_version__': (0, 17)}</properties>
+		<properties format="literal" node_id="10">{'autoSend': True, 'controlAreaVisible': True, 'copyAnnotations': True, 'displayAdvancedSettings': True, 'lastLocation': 'C:/Users/Aris/Dropbox/transfert/david_bouvier/spectroNgram', 'regex': '', 'replString': '', 'savedWidgetGeometry': b'\x01\xd9\xd0\xcb\x00\x02\x00\x00\x00\x00\x02\x89\x00\x00\x00\x9b\x00\x00\x04\x16\x00\x00\x03|\x00\x00\x02\x91\x00\x00\x00\xba\x00\x00\x04\x0e\x00\x00\x03t\x00\x00\x00\x00\x00\x00\x00\x00\x06\x90', 'substitutions': [('  ⟨ ', ' ', False, True, False, False), ('⟩  ', ' ', False, True, False, False), ('⟨ ', '', False, True, False, False), ('⟩ ', '', False, True, False, False), ('\\[.*?desunt.*?\\]1?', ' ', False, True, False, True), ('[\\[\\]{}]1?', ' ', False, True, False, False), ('\\b[t.\\d]*\\d+[ta.\\d]*\\b', ' ', False, True, False, False), ('[ ]+', ' ', False, True, False, False), ('[’ʹ] ', ' ', False, True, False, False)], 'uuid': '1cdf83b1-65d7-49e8-a53d-ed16b666cf8b', '__version__': 1, '_TextableUtils_settings_version__': (0, 13)}</properties>
+		<properties format="literal" node_id="11">{'autoSend': True, 'controlAreaVisible': True, 'copyAnnotations': True, 'displayAdvancedSettings': True, 'lastLocation': 'F:/langtech/Textable/schemas/bouvier/spectroNgram', 'regex': '', 'replString': '', 'savedWidgetGeometry': b'\x01\xd9\xd0\xcb\x00\x02\x00\x00\x00\x00\x02\x89\x00\x00\x00\x9b\x00\x00\x04\x16\x00\x00\x03|\x00\x00\x02\x91\x00\x00\x00\xba\x00\x00\x04\x0e\x00\x00\x03t\x00\x00\x00\x00\x00\x00\x00\x00\x06\x90', 'substitutions': [('[XIV]+', ' ', False, True, False, False), ('[\\[(]?\\d+\\w[\\])]', ' ', False, True, False, False), ('\\d', ' ', False, True, False, False)], 'uuid': 'ec7a2fcc-458a-4ae7-b41a-64b3095b1f13', '__version__': 1, '_TextableUtils_settings_version__': (0, 13)}</properties>
+		<properties format="literal" node_id="12">{'autoNumber': False, 'autoNumberKey': 'num', 'autoSend': True, 'controlAreaVisible': True, 'displayAdvancedSettings': False, 'encoding': '(auto-detect)', 'file': '', 'files': [], 'importFilenames': True, 'importFilenamesKey': 'filename', 'lastLocation': '.', 'savedWidgetGeometry': b'\x01\xd9\xd0\xcb\x00\x02\x00\x00\x00\x00\x02\x8f\x00\x00\x01n\x00\x00\x04\x00\x00\x00\x02l\x00\x00\x02\x97\x00\x00\x01\x8d\x00\x00\x03\xf8\x00\x00\x02d\x00\x00\x00\x00\x00\x00\x00\x00\x06\x90', 'uuid': '7c7f562d-d3ac-4879-a3f2-ddf9858c3ed2', '__version__': 1, '_TextableUtils_settings_version__': (0, 17)}</properties>
+		<properties format="literal" node_id="13">{'applyCaseTransform': True, 'autoSend': True, 'caseTransform': 'to lower', 'controlAreaVisible': True, 'copyAnnotations': True, 'removeAccents': False, 'savedWidgetGeometry': b'\x01\xd9\xd0\xcb\x00\x01\x00\x00\x00\x00\x03\x10\x00\x00\x01\xbe\x00\x00\x04q\x00\x00\x02\xed\x00\x00\x03\x1b\x00\x00\x01\xeb\x00\x00\x04f\x00\x00\x02\xe2\x00\x00\x00\x00\x00\x00', 'uuid': '06c6bd6c-3952-4910-94b9-d8d96d20fb13', '__version__': 1, '_TextableUtils_settings_version__': (0, 11)}</properties>
+		<properties format="literal" node_id="14">{'autoNumber': False, 'autoNumberKey': 'num', 'autoSend': False, 'controlAreaVisible': True, 'copyAnnotations': True, 'importLabels': False, 'labelKey': 'input_label', 'mergeDuplicates': False, 'savedWidgetGeometry': b'\x01\xd9\xd0\xcb\x00\x02\x00\x00\x00\x00\x03n\x00\x00\x02-\x00\x00\x05\x01\x00\x00\x03\x85\x00\x00\x03v\x00\x00\x02L\x00\x00\x04\xf9\x00\x00\x03}\x00\x00\x00\x00\x00\x00\x00\x00\x06\x90', 'uuid': '2339281e-9873-4d07-83ca-7d96ba598097', '__version__': 1, '_TextableUtils_settings_version__': (0, 21)}</properties>
+		<properties format="pickle" node_id="15">gAN9cQAoWAsAAABhdXRvX2NvbW1pdHEBiFgOAAAAY29sb3JfYnlfY2xhc3NxAohYEgAAAGNvbnRy
+b2xBcmVhVmlzaWJsZXEDiFgOAAAAZGlzdF9jb2xvcl9SR0JxBChL3EvcS9xL/3RxBVgTAAAAc2F2
+ZWRXaWRnZXRHZW9tZXRyeXEGQzIB2dDLAAIAAAAAAbAAAADgAAAE3wAAAvoAAAG4AAAA/wAABNcA
+AALyAAAAAAAAAAAGkHEHWAsAAABzZWxlY3Rfcm93c3EIiFgVAAAAc2hvd19hdHRyaWJ1dGVfbGFi
+ZWxzcQmIWBIAAABzaG93X2Rpc3RyaWJ1dGlvbnNxColYCwAAAF9fdmVyc2lvbl9fcQtLAVgQAAAA
+Y29udGV4dF9zZXR0aW5nc3EMXXENKGNPcmFuZ2Uud2lkZ2V0cy5zZXR0aW5ncwpDb250ZXh0CnEO
+KYFxD31xEChYBAAAAHRpbWVxEUdB1s/IEC5FZFgGAAAAdmFsdWVzcRJ9cRMoWA0AAABzZWxlY3Rl
+ZF9jb2xzcRRdcRVYDQAAAHNlbGVjdGVkX3Jvd3NxFl1xF2gLSwF1WAoAAABhdHRyaWJ1dGVzcRh9
+cRkoWBcAAABudW1iZXIgb2YgMS1ncmFtIHRva2Vuc3EaSwJYFgAAAG51bWJlciBvZiAxLWdyYW0g
+dHlwZXNxG0sCdVgFAAAAbWV0YXNxHH1xHVgGAAAAc291cmNlcR5LA3N1YmgOKYFxH31xIChYDgAA
+AG9yZGVyZWRfZG9tYWlucSFdcSIoWBcAAABudW1iZXIgb2YgMS1ncmFtIHRva2Vuc3EjSwKGcSRY
+FgAAAG51bWJlciBvZiAxLWdyYW0gdHlwZXNxJUsChnEmZWgSfXEnKFgNAAAAc2VsZWN0ZWRfY29s
+c3EoXXEpWA0AAABzZWxlY3RlZF9yb3dzcSpdcStoC0sBdWgYfXEsKGglSwJoI0sCdWgcfXEtaBFH
+QdZP7oWRzi51YmgOKYFxLn1xLyhoIV1xMChYFwAAAG51bWJlciBvZiAyLWdyYW0gdG9rZW5zcTFL
+AoZxMlgWAAAAbnVtYmVyIG9mIDItZ3JhbSB0eXBlc3EzSwKGcTRlaBJ9cTUoWA0AAABzZWxlY3Rl
+ZF9jb2xzcTZdcTdYDQAAAHNlbGVjdGVkX3Jvd3NxOF1xOWgLSwF1aBh9cTooaDNLAmgxSwJ1aBx9
+cTtoEUdB1kyy3hPxXnViZXUu
+</properties>
+		<properties format="pickle" node_id="16">gAN9cQAoWAgAAABhdXRvU2VuZHEBiFgSAAAAY29udHJvbEFyZWFWaXNpYmxlcQKIWBMAAABzYXZl
+ZFdpZGdldEdlb21ldHJ5cQNDMgHZ0MsAAgAAAAADuAAAAYAAAAUPAAACYQAAA8AAAAGfAAAFBwAA
+AlkAAAAAAAAAAAaQcQRYDgAAAHNlcXVlbmNlTGVuZ3RocQVLAVgEAAAAdXVpZHEGWCQAAABkZmNj
+ZmZhNy1mYjQxLTQwOTctYTYzYS00ZjA2MGQ0ZmEwMWRxB1gLAAAAX192ZXJzaW9uX19xCEsBWBAA
+AABjb250ZXh0X3NldHRpbmdzcQldcQpjT3JhbmdlLndpZGdldHMuc2V0dGluZ3MKQ29udGV4dApx
+CymBcQx9cQ0oWAYAAAB2YWx1ZXNxDn1xDyhYDQAAAGFubm90YXRpb25LZXlxEFgGAAAAc291cmNl
+cRFoCEsBdVgHAAAAZW5jb2RlZHESWBEAAABVbml0IFNlZ21lbnRhdGlvbnETWAgAAABmaWxlbmFt
+ZXEUWAYAAABzb3VyY2VxFYZxFoZxF1gEAAAAdGltZXEYR0HWz8gOmmJ2dWJhWCEAAABfVGV4dGFi
+bGVVdGlsc19zZXR0aW5nc192ZXJzaW9uX19xGUsASwCGcRp1Lg==
+</properties>
+		<properties format="pickle" node_id="17">gAN9cQAoWAsAAABhdXRvX2NvbW1pdHEBiFgOAAAAY29sb3JfYnlfY2xhc3NxAohYEgAAAGNvbnRy
+b2xBcmVhVmlzaWJsZXEDiFgOAAAAZGlzdF9jb2xvcl9SR0JxBChL3EvcS9xL/3RxBVgTAAAAc2F2
+ZWRXaWRnZXRHZW9tZXRyeXEGQzIB2dDLAAIAAAAAAbAAAADgAAAE3wAAAvoAAAG4AAAA/wAABNcA
+AALyAAAAAAAAAAAGkHEHWAsAAABzZWxlY3Rfcm93c3EIiFgVAAAAc2hvd19hdHRyaWJ1dGVfbGFi
+ZWxzcQmIWBIAAABzaG93X2Rpc3RyaWJ1dGlvbnNxColYCwAAAF9fdmVyc2lvbl9fcQtLAVgQAAAA
+Y29udGV4dF9zZXR0aW5nc3EMXXENKGNPcmFuZ2Uud2lkZ2V0cy5zZXR0aW5ncwpDb250ZXh0CnEO
+KYFxD31xEChYBAAAAHRpbWVxEUdB1s/IEEM0p1gGAAAAdmFsdWVzcRJ9cRMoWA0AAABzZWxlY3Rl
+ZF9jb2xzcRRdcRVYDQAAAHNlbGVjdGVkX3Jvd3NxFl1xF2gLSwF1WAoAAABhdHRyaWJ1dGVzcRh9
+cRkoWAMAAAAyLTVxGksCWAQAAAA2LTEwcRtLAlgFAAAAMTEtMTVxHEsCWAMAAAA+MTVxHUsCdVgF
+AAAAbWV0YXNxHn1xH1gGAAAAc291cmNlcSBLA3N1YmgOKYFxIX1xIihYDgAAAG9yZGVyZWRfZG9t
+YWlucSNdcSQoWAMAAAAyLTVxJUsChnEmWAQAAAA2LTEwcSdLAoZxKFgFAAAAMTEtMTVxKUsChnEq
+WAMAAAA+MTVxK0sChnEsZWgSfXEtKFgNAAAAc2VsZWN0ZWRfY29sc3EuXXEvWA0AAABzZWxlY3Rl
+ZF9yb3dzcTBdcTFoC0sBdWgYfXEyKGgrSwJoKUsCaCVLAmgnSwJ1aB59cTNoEUdB1k/uhag06HVi
+ZXUu
+</properties>
+		<properties format="pickle" node_id="18">gAN9cQAoWAsAAABhdXRvX2NvbW1pdHEBiFgOAAAAY29sb3JfYnlfY2xhc3NxAohYEgAAAGNvbnRy
+b2xBcmVhVmlzaWJsZXEDiFgOAAAAZGlzdF9jb2xvcl9SR0JxBChL3EvcS9xL/3RxBVgTAAAAc2F2
+ZWRXaWRnZXRHZW9tZXRyeXEGQzIB2dDLAAIAAAAAAbAAAADgAAAE3wAAAvoAAAG4AAAA/wAABNcA
+AALyAAAAAAAAAAAGkHEHWAsAAABzZWxlY3Rfcm93c3EIiFgVAAAAc2hvd19hdHRyaWJ1dGVfbGFi
+ZWxzcQmIWBIAAABzaG93X2Rpc3RyaWJ1dGlvbnNxColYCwAAAF9fdmVyc2lvbl9fcQtLAVgQAAAA
+Y29udGV4dF9zZXR0aW5nc3EMXXENKGNPcmFuZ2Uud2lkZ2V0cy5zZXR0aW5ncwpDb250ZXh0CnEO
+KYFxD31xEChYBAAAAHRpbWVxEUdB1s/IEDXP8FgGAAAAdmFsdWVzcRJ9cRMoWA0AAABzZWxlY3Rl
+ZF9jb2xzcRRdcRUoSwBLAUsCSwNlWA0AAABzZWxlY3RlZF9yb3dzcRZdcRdLCGFoC0sBdVgKAAAA
+YXR0cmlidXRlc3EYfXEZKFgGAAAASWxpYWRlcRpLAlgHAAAAT2R5c3NlZXEbSwJYBgAAAFBsYXRv
+bnEcSwJYBwAAAFF1aW50dXNxHUsCdVgFAAAAbWV0YXNxHn1xH1gGAAAAMS1ncmFtcSBLA3N1YmgO
+KYFxIX1xIihYDgAAAG9yZGVyZWRfZG9tYWlucSNdcSQoWAcAAABPZHlzc2VlcSVLAoZxJlgGAAAA
+UGxhdG9ucSdLAoZxKFgGAAAASWxpYWRlcSlLAoZxKlgHAAAAUXVpbnR1c3ErSwKGcSxlaBJ9cS0o
+WA0AAABzZWxlY3RlZF9jb2xzcS5dcS8oSwBLAUsCSwNlWA0AAABzZWxlY3RlZF9yb3dzcTBdcTFL
+CGFoC0sBdWgYfXEyKGgpSwJoJUsCaCtLAmgnSwJ1aB59cTNoEUdB1k/uhaFsGnViZXUu
+</properties>
+		<properties format="literal" node_id="19">{'controlAreaVisible': True, 'savedWidgetGeometry': b'\x01\xd9\xd0\xcb\x00\x02\x00\x00\x00\x00\x01\xf8\x00\x00\x00\xd8\x00\x00\x04\x97\x00\x00\x03\x03\x00\x00\x02\x00\x00\x00\x00\xf7\x00\x00\x04\x8f\x00\x00\x02\xfb\x00\x00\x00\x00\x00\x00\x00\x00\x06\x90', '__version__': 1}</properties>
+	</node_properties>
+</scheme>

@@ -39,7 +39,7 @@ class myLegend(pg.LegendItem):
     """Subclassing to modify background color..."""
     def paint(self, p, *args):
         p.setPen(pg.functions.mkPen(0, 0, 0)) # outline
-        p.setBrush(pg.functions.mkBrush(255, 255, 255, 200))   # background
+        p.setBrush(pg.functions.mkBrush(255, 255, 255, 64))   # background
         p.drawRect(self.boundingRect())
         
 
@@ -49,7 +49,7 @@ class Spectrum(widget.OWWidget):
     description = 'View frequency spectrum as line chart.'
     icon = "icons/spectrum.svg"
 
-    __version__ = '0.0.4'
+    __version__ = '0.0.5'
 
     inputs = [("Data", PivotCrosstab, "set_data")]
     outputs = [
@@ -99,9 +99,12 @@ class Spectrum(widget.OWWidget):
         # Get frequencies...
         freq = dict()
         for row_id in row_ids:
-            freq[row_id] = list(
-            tuple_to_simple_dict(transposed.values, row_id).values()
-        )
+            freq[row_id] = [
+                f for f in tuple_to_simple_dict(
+                    transposed.values, row_id
+                ).values()
+                if f > 0
+            ]
 
         # Get bins and labels
         lower_bound_bin = 1 + int(skip_freq_1)
@@ -112,16 +115,23 @@ class Spectrum(widget.OWWidget):
             max_bin_limit = max_freq + bin_step + 1
         else:
             max_bin_limit = min_upper_bound_bin + 1
-        bins   = [lower_bound_bin]
+        bins = [lower_bound_bin]
         labels = list()
-        for i in range(bin_step + 1, max_bin_limit, bin_step):
+        for i in range(bin_step+1, max_bin_limit, bin_step):   
+            if bin_step > 1:
+                labels.append('%i-%i' % (i-bin_step, i-1))
+            else:
+                labels.append('%i' % (i-1))            
             if i > max_lower_bound_bin + bin_step:
                 bins.append(max_bin_limit)
-                labels.append('>%i' % (i-bin_step-1))
                 break
             bins.append(i)
-            labels.append('%i-%i' % (i-bin_step, i-1))
-        labels[0] = '%i-%i' % (lower_bound_bin, bin_step)
+        if skip_freq_1:
+            labels[0] = re.sub(r"\b1\b", r"2", labels[-0])
+        labels[-1] = re.sub(r"(\d+).*", r"\1+", labels[-1])
+        if bins[0] == bins[1]:
+            bins.pop(0)
+            labels.pop(0)
         self.line_chart.getAxis('bottom').setTicks([enumerate(labels)])
         
         # Plot spectrum...
@@ -129,28 +139,35 @@ class Spectrum(widget.OWWidget):
             self.legend.scene().removeItem(self.legend)
         except:
             pass
+        all_spectrums = list()
         self.legend = myLegend((100, 70), offset=(-70, 50))
         self.legend.setParentItem(self.line_chart.graphicsItem())
         spectrum = dict()
         n = re.search(r'\d+', transposed.header_row_id).group()
         for idx, row_id in enumerate(row_ids):
             hist, bins = np.histogram(freq[row_id], bins)
-            hist = hist.astype('float_') / sum(freq[row_id]) * 1000
-            line = self.line_chart.plot(
-                hist, 
-                pen=pg.intColor(
+            hist = hist.astype('float_')      \
+                / len(freq[row_id]) * 1000
+            all_spectrums += list(hist)
+            pen=pg.mkPen(
+                pg.intColor(
                     idx, 
                     hues=len(row_ids), 
                     minValue=32, 
                     maxValue=224,
                 ),
+                width=2, 
+            )
+            line = self.line_chart.plot(
+                hist, 
+                pen=pen,
             )
             self.legend.addItem(line, row_id)
             if len(row_ids) == 1:
                 row_id = 'proportion of %s-gram types (in per mille)' % n
                 row_ids = [row_id]
             for i in range(len(labels)):
-                spectrum[(row_id, labels[i])] =  hist[i]
+                spectrum[(row_id, labels[i])] = hist[i]
         self.line_chart.setTitle("<h2>%s-gram frequency spectrum</h2>" % n)
         self.line_chart.setLabel(
             "left", 
