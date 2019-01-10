@@ -1,7 +1,7 @@
 Ancient Greek metrics
 =====================
 
-This is an add-on for analyzing Ancient Greek metrics within the 
+This is an add-on for analyzing Ancient Greek metrics within the
 [Orange3](http://orange.biolab.si) framework.
 
 Installation
