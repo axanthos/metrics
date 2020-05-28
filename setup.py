@@ -33,9 +33,9 @@ DATA_FILES = [
 ]
 
 INSTALL_REQUIRES = [
-    'Orange3 >= 3.7',
-    'Orange3-Textable >= 3.1.0b3',
-    'LTTL >= 2.0.6',
+    'Orange3 >= 3.14',
+    'Orange3-Textable >= 3.1.5',
+    'LTTL >= 2.0.9',
 ]
 
 ENTRY_POINTS = {
