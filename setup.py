@@ -8,11 +8,12 @@ from setuptools import setup, find_packages
 NAME = 'Orange3-Ancient-Greek-Metrics'
 DOCUMENTATION_NAME = 'Ancient Greek Metrics'
 
-VERSION = "0.0.6"
+VERSION = "0.0.7"
 
 DESCRIPTION = "Add-on for analyzing Ancient Greek metrics"
-LONG_DESCRIPTION = open(path.join(path.dirname(__file__), 'README.md')).read()
-
+with open(path.join(path.dirname(__file__), 'README.md'), encoding='utf-8') as f:
+    LONG_DESCRIPTION = f.read()
+    
 LICENSE = "BSD"
 
 KEYWORDS = (
@@ -24,8 +25,6 @@ KEYWORDS = (
 PACKAGES = find_packages()
 
 PACKAGE_DATA = {
-    'orangecontrib.ancient_greek_metrics': ['tutorials/*.ows'],
-    'orangecontrib.ancient_greek_metrics.widgets': ['icons/*'],
 }
 
 DATA_FILES = [
@@ -94,6 +93,7 @@ if __name__ == '__main__':
         version=VERSION,
         description=DESCRIPTION,
         long_description=LONG_DESCRIPTION,
+        long_description_content_type='text/markdown',
         license=LICENSE,
         packages=PACKAGES,
         package_data=PACKAGE_DATA,
