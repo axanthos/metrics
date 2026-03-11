@@ -19,3 +19,4 @@ __pycache__
 .settings/*
 .DS_Store
 release.bat
+/.venv

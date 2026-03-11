@@ -24,8 +24,8 @@ from Orange.widgets import gui, settings, widget
 
 import pyqtgraph as pg
 
-from PyQt4 import QtGui
-from PyQt4.QtGui import QFileDialog, QMessageBox
+from AnyQt import QtGui
+from AnyQt.QtWidgets import QFileDialog, QMessageBox
 
 from LTTL.Table import PivotCrosstab, IntPivotCrosstab
 from LTTL.Segmentation import Segmentation

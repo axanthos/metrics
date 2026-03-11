@@ -17,10 +17,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import Orange
 from Orange.widgets import gui, settings, widget
 
-from PyQt4 import QtGui
+from AnyQt import QtGui
 
 from LTTL.Segmentation import Segmentation
-from LTTL.Table import Table, IntPivotCrosstab
+from LTTL.TableThread import Table, IntPivotCrosstab
 from _textable.widgets.TextableUtils import (
     OWTextableBaseWidget,
     InfoBox, 

@@ -1,0 +1,3 @@
+recursive-include orangecontrib/ancient_greek_metrics/tutorials *.ows
+include README.md
+include LICENSE

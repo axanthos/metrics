@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<scheme description="A Textable schema for studying n-gram frequencies and their spectrum.&#10;Made by LangTech Sàrl on behalf of the University of Lausanne.&#10;&#10;(Adapted for Textable v3.1.0b2)" title="SpectroNgram v3.3" version="2.0">
+<scheme description="A Textable schema for studying n-gram frequencies and their spectrum.&#10;Made by LangTech Sàrl on behalf of the University of Lausanne.&#10;&#10;(Adapted for Textable v3.2.7)" title="SpectroNgram v3.4" version="2.0">
 	<nodes>
 		<node id="0" name="Text Files" position="(197.0, 168.0)" project_name="Orange3-Textable" qualified_name="_textable.widgets.OWTextableTextFiles.OWTextableTextFiles" title="Texts in &quot;Homer&quot; format" version="" />
 		<node id="1" name="Preprocess" position="(414.0, 173.0)" project_name="Orange3-Textable" qualified_name="_textable.widgets.OWTextablePreprocess.OWTextablePreprocess" title="Preprocess" version="" />
@@ -16,10 +16,10 @@
 		<node id="12" name="Text Files" position="(70.0, 474.0)" project_name="Orange3-Textable" qualified_name="_textable.widgets.OWTextableTextFiles.OWTextableTextFiles" title="Text Files" version="" />
 		<node id="13" name="Preprocess" position="(173.0, 473.0)" project_name="Orange3-Textable" qualified_name="_textable.widgets.OWTextablePreprocess.OWTextablePreprocess" title="Preprocess (1)" version="" />
 		<node id="14" name="Merge" position="(308.0, 459.0)" project_name="Orange3-Textable" qualified_name="_textable.widgets.OWTextableMerge.OWTextableMerge" title="Merge (1)" version="" />
-		<node id="15" name="Data Table" position="(651.0, 86.0)" project_name="Orange3" qualified_name="Orange.widgets.data.owtable.OWDataTable" title="Data Table" version="" />
+		<node id="15" name="Data Table" position="(651.0, 86.0)" project_name="Orange3" qualified_name="Orange.widgets.data.owtable.OWTable" title="Data Table" version="" />
 		<node id="16" name="Ngrams" position="(556.0, 171.0)" project_name="Orange3-Ancient-Greek-Metrics" qualified_name="orangecontrib.ancient_greek_metrics.widgets.ngrams.NGrams" title="Ngrams" version="" />
-		<node id="17" name="Data Table" position="(865.0, 171.0)" project_name="Orange3" qualified_name="Orange.widgets.data.owtable.OWDataTable" title="Display frequency spectrum table" version="" />
-		<node id="18" name="Data Table" position="(653.0, 388.0)" project_name="Orange3" qualified_name="Orange.widgets.data.owtable.OWDataTable" title="Display n-gram frequencies" version="" />
+		<node id="17" name="Data Table" position="(865.0, 171.0)" project_name="Orange3" qualified_name="Orange.widgets.data.owtable.OWTable" title="Display frequency spectrum table" version="" />
+		<node id="18" name="Data Table" position="(653.0, 388.0)" project_name="Orange3" qualified_name="Orange.widgets.data.owtable.OWTable" title="Display n-gram frequencies" version="" />
 		<node id="19" name="Spectrum" position="(653.0, 171.0)" project_name="Orange3-Ancient-Greek-Metrics" qualified_name="orangecontrib.ancient_greek_metrics.widgets.spectrum.Spectrum" title="Spectrum" version="" />
 	</nodes>
 	<links>

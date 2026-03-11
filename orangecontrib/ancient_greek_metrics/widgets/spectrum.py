@@ -23,9 +23,9 @@ from Orange.widgets import gui, settings, widget
 
 import pyqtgraph as pg
 
-from PyQt4 import QtGui
+from AnyQt import QtGui
 
-from LTTL.Table import PivotCrosstab
+from LTTL.TableThread import PivotCrosstab
 from LTTL.Utils import tuple_to_simple_dict
 
 # Parameters
@@ -146,7 +146,7 @@ class Spectrum(widget.OWWidget):
         n = re.search(r'\d+', transposed.header_row_id).group()
         for idx, row_id in enumerate(row_ids):
             hist, bins = np.histogram(freq[row_id], bins)
-            hist = hist.astype('float_')      \
+            hist = hist.astype(np.float64)      \
                 / len(freq[row_id]) * 1000
             all_spectrums += list(hist)
             pen=pg.mkPen(

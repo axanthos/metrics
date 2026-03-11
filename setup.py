@@ -33,9 +33,13 @@ DATA_FILES = [
 ]
 
 INSTALL_REQUIRES = [
-    'Orange3 >= 3.14',
-    'Orange3-Textable >= 3.1.5',
-    'LTTL >= 2.0.9',
+    'chardet>=3.0.2,<5.0.0',
+    'Orange3 >= 3.38',
+    'Orange3-Textable >= 3.2.7',
+    'LTTL >= 2.1.0',
+    'AnyQt',
+    'PyQt6',
+    'PyQt6-WebEngine',
 ]
 
 ENTRY_POINTS = {
