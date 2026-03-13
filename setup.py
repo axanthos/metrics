@@ -74,20 +74,20 @@ TEST_SUITE = "orangecontrib.ancient_greek_metrics.tests.suite"
 
 def include_documentation(local_dir, install_dir):
     global DATA_FILES
-    if 'bdist_wheel' in sys.argv and not path.exists(local_dir):
-        print("Directory '{}' does not exist. "
-              "Please build documentation before running bdist_wheel."
-              .format(path.abspath(local_dir)))
-        sys.exit(0)
+    # On vérifie si le dossier existe, sinon on ignore silencieusement
+    if not path.exists(local_dir):
+        print(f"Warning: Directory '{local_dir}' not found. Skipping documentation.")
+        return
 
     doc_files = []
     for dirpath, dirs, files in walk(local_dir):
-        doc_files.append((dirpath.replace(local_dir, install_dir),
-                          [path.join(dirpath, f) for f in files]))
+        if files: # On n'ajoute que s'il y a des fichiers
+            doc_files.append((dirpath.replace(local_dir, install_dir),
+                              [path.join(dirpath, f) for f in files]))
     DATA_FILES.extend(doc_files)
 
 if __name__ == '__main__':
-    include_documentation('doc/build/html', 'help/orange3-ancient-greek-metrics')
+    #include_documentation('doc/build/html', 'help/orange3-ancient-greek-metrics')
     setup(
         name=NAME,
         version=VERSION,
